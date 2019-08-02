@@ -40,6 +40,10 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                 </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="BYZ-38-t0r" id="fme-zw-4Sa"/>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="boj-po-i06"/>
+                                </connections>
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -52,8 +56,15 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" id="VoN-Q9-w8F">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="H04-lc-PAI"/>
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="H04-lc-PAI">
+                            <connections>
+                                <action selector="tapAddButton:" destination="BYZ-38-t0r" id="86B-5d-c2N"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="tableView" destination="jF6-D3-9pg" id="l3d-tW-FAI"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
