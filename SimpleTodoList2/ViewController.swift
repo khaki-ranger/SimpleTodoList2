@@ -93,6 +93,11 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         return cell
     }
     
+    // セルが編集可能かどうかを返却する
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
     // セルをタップしたときの処理
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let myTodo = todoList[indexPath.row]
@@ -114,12 +119,28 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         userDefaults.set(data, forKey: "todoList")
         userDefaults.synchronize()
     }
+    
+    // セルを削除したときの処理
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        // 削除処理かどうか
+        if editingStyle == UITableViewCellEditingStyle.delete {
+            // ToDoリストから削除
+            todoList.remove(at: indexPath.row)
+            // セルを削除
+            tableView.deleteRows(at: [indexPath as IndexPath], with: UITableViewRowAnimation.fade)
+            // データ保存。Data型にシリアライズ
+            let data = NSKeyedArchiver.archivedData(withRootObject: self.todoList)
+            // UserDefaultsに保存
+            let userDefaults = UserDefaults.standard
+            userDefaults.set(data, forKey: "todoList")
+            userDefaults.synchronize()
+        }
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
 
 }
 
