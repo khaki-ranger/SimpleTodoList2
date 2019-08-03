@@ -32,6 +32,11 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         }
     }
     
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
     // +ボタンをタップした時に呼ばれる処理
     @IBAction func tapAddButton(_ sender: Any) {
         // アラートダイアログを生成
@@ -39,7 +44,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
         // テキストエリアを追加
         alertController.addTextField(configurationHandler: nil)
-        // OKボタンを追加
+        // OKボタンがタップされたときの処理
         let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default) { (action: UIAlertAction) in
             // OKボタンがタップされたときの処理
             if let textField = alertController.textFields?.first {
@@ -49,15 +54,11 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
                 self.todoList.insert(myTodo, at: 0)
                 // テーブルに行が追加されたことをテーブルに通知
                 self.tableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: UITableViewRowAnimation.right)
-                // ToDoの保存処理
-                let userDefaults = UserDefaults.standard
-                // Data型にシリアライズする
-                let data = NSKeyedArchiver.archivedData(withRootObject: self.todoList)
-                userDefaults.set(data, forKey: "todoList")
-                userDefaults.synchronize()
+                // データを保存
+                self.saveTodoList()
             }
         }
-        // OKボタンがタップされたときの処理
+        // OKボタンを追加
         alertController.addAction(okAction)
         // CANCELLボタンがタップされたときの処理
         let canncelButton = UIAlertAction(title: "CANCEL", style: UIAlertActionStyle.cancel, handler: nil)
@@ -79,7 +80,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         let cell = tableView.dequeueReusableCell(withIdentifier: "todoCell", for: indexPath)
         // 行番号にあったToDoの情報を取得
         let myTodo = todoList[indexPath.row]
-//        let todoTitle = todoList[indexPath.row]
         // セルのラベルにToDoのタイトルをセット
         cell.textLabel?.text = myTodo.todoTitle
         // セルのチェックマーク状態をセット
@@ -110,14 +110,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         }
         // セルの状態を変更
         tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.fade)
-        
-        // データ保存
-        // Data型にシリアライズする
-        let data = NSKeyedArchiver.archivedData(withRootObject: self.todoList)
-        // UserDefaultsに保存
-        let userDefaults = UserDefaults.standard
-        userDefaults.set(data, forKey: "todoList")
-        userDefaults.synchronize()
+        // データを保存
+        self.saveTodoList()
     }
     
     // セルを削除したときの処理
@@ -128,18 +122,19 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             todoList.remove(at: indexPath.row)
             // セルを削除
             tableView.deleteRows(at: [indexPath as IndexPath], with: UITableViewRowAnimation.fade)
-            // データ保存。Data型にシリアライズ
-            let data = NSKeyedArchiver.archivedData(withRootObject: self.todoList)
-            // UserDefaultsに保存
-            let userDefaults = UserDefaults.standard
-            userDefaults.set(data, forKey: "todoList")
-            userDefaults.synchronize()
+            // データを保存
+            self.saveTodoList()
         }
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    // Data型にシリアライズしてデータを保存するための関数
+    func saveTodoList() {
+        // Data型にシリアライズ
+        let data = NSKeyedArchiver.archivedData(withRootObject: self.todoList)
+        // UserDefaultsに保存
+        let userDefaults = UserDefaults.standard
+        userDefaults.set(data, forKey: "todoList")
+        userDefaults.synchronize()
     }
 
 }
